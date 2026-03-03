@@ -23,12 +23,12 @@ Pełny skrypt łączący tabele i wyliczający zmienne znajduje się w pliku `pr
 ## Proces Modelowania
 Analizę przeprowadzono w środowisku **SAS Enterprise Miner**. Zbudowano i przetestowano 5 wariantów drzew decyzyjnych w celu znalezienia optymalnej architektury.
 
-![Diagram przepływu](images/diagram_przepływu.png)
+![Diagram przepływu](images/diagram_przeplywu.png)
 
 ## Wyniki i Wybór Modelu
 Modele oceniono na zbiorze walidacyjnym, aby zminimalizować ryzyko przeuczenia.
 
-![Tabela wyników](images/porownywanie_drzew.png)
+![Tabela wyników](images/porownanie_drzew.png)
 
 * [cite_start]**Wybrany model:** Drzewo decyzyjne 2[cite: 368, 369].
 * **Uzasadnienie:** Model osiągnął najniższy odsetek błędnych klasyfikacji na zbiorze walidacyjnym, wynoszący **ok. [cite_start]4,8% (0.0483)**[cite: 368, 369]. [cite_start]Zbyt rozbudowane modele (np. Drzewo 4 i 5) radziły sobie gorzej na nowych danych (błąd rzędu 6,2%), co świadczyło o ich przeuczeniu (overfittingu)[cite: 368].
