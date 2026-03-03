@@ -23,7 +23,7 @@ Pełny skrypt łączący tabele i wyliczający zmienne znajduje się w pliku `pr
 ## Proces Modelowania
 Analizę przeprowadzono w środowisku **SAS Enterprise Miner**. Zbudowano i przetestowano 5 wariantów drzew decyzyjnych w celu znalezienia optymalnej architektury.
 
-![Diagram przepływu](images/diagram_przeplywu.png)
+![Diagram przepływu](images/diagram_przepływu.png)
 
 ## Wyniki i Wybór Modelu
 Modele oceniono na zbiorze walidacyjnym, aby zminimalizować ryzyko przeuczenia.
