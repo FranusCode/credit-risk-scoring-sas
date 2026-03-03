@@ -1,0 +1,154 @@
+libname bank '/home/u64365845/projekt';
+
+data loan_base;
+    set bank.loan;
+
+    if status in ('A', 'C') then Default = 0;
+    else if status in ('B', 'D') then Default = 1;
+
+    Kwota_Kredytu = amount;
+    Dlugosc_Kredytu = duration;
+    Rata_Kredytu = payments;
+    
+    rename date = Data_Kredytu;
+run;
+
+proc sql;
+    create table client_geo as
+    select 
+        c.client_id,
+        c.district_id,
+        1900 + input(substr(put(c.birth_number,z6.), 1, 2), 2.) as Rok_Urodzenia,
+        case when input(substr(put(c.birth_number,z6.), 3, 2), 2.) > 50 then 1 else 0 end as Plec,
+        
+        d.A12 as Bezrobocie,
+        d.A15 as Przestepczosc,
+        d.A11 as Srednia_Pensja,
+        d.A4  as Urbanizacja
+        
+    from bank.client c
+
+    left join bank.district d 
+    on c.district_id = d.A1;
+quit;
+
+data client_final;
+    set client_geo;
+
+    Data_Urodzenia = mdy(7, 1, Rok_Urodzenia);
+    drop Rok_Urodzenia;
+run;
+
+proc sql;
+    create table trans_history as
+    select 
+        t.*, 
+        l.loan_id, 
+        l.Data_Kredytu
+    from 
+        bank.trans t, 
+        loan_base l
+    where 
+        t.account_id = l.account_id 
+        and t.date < l.Data_Kredytu;
+quit;
+
+proc sql;
+    create table feats_trans as
+    select 
+        loan_id,
+        
+        mean(balance) as Srednie_Saldo,
+        min(balance) as Min_Saldo, 
+        max(balance) as Max_Saldo,
+        std(balance) as Odchylenie_Salda,
+        sum(case when type='PRIJEM' then amount else 0 end) as Suma_Wplywow, 
+        sum(case when type='VYDAJ' then amount else 0 end) as Suma_Wydatkow, 
+        count(*) as Liczba_Transakcji,        
+        sum(case when k_symbol = 'SANKC. UROK' then 1 else 0 end) as Liczba_Kar,
+        
+        mean(case when (Data_Kredytu - date) <= 90 then balance else . end) as Srednie_Saldo_3M, 
+        min(case when (Data_Kredytu - date) <= 90 then balance else . end) as Min_Saldo_3M,    
+        sum(case when (Data_Kredytu - date) <= 90 and type='PRIJEM' then amount else 0 end) as Wplywy_3M 
+        
+    from trans_history
+    group by loan_id;
+quit;
+
+proc sql;
+    create table feats_products as
+    select 
+        a.account_id,
+
+        a.date as Data_Zalozenia,
+        case when a.frequency = 'POPLATEK MESICNE' then 1 else 0 end as Czestosc_Wyciagu,
+        
+        max(case when ca.card_id is not null then 1 else 0 end) as Posiada_Karte,      
+        max(case when ca.type = 'gold' then 1 else 0 end) as Posiada_Karte_Gold,       
+
+
+        count(distinct o.order_id) as Liczba_Zlecen,
+        sum(o.amount) as Suma_Zlecen,         
+        sum(case when o.k_symbol = 'POJISTNE' then 1 else 0 end) as Oplaca_Ubezpieczenie, 
+        sum(case when o.k_symbol = 'SIPO' then 1 else 0 end) as Oplaca_Mieszkanie      
+        
+    from 
+        bank.account a
+        left join bank.disp d on a.account_id = d.account_id and d.type = 'OWNER'
+        left join bank.card ca on d.disp_id = ca.disp_id
+        left join bank.order o on a.account_id = o.account_id
+    group by a.account_id, a.date, a.frequency;
+quit;
+
+proc sql;
+    create table bank.Final_Table as
+    select 
+        l.loan_id,    
+        l.Default,   
+        
+        l.Kwota_Kredytu, 
+        l.Dlugosc_Kredytu, 
+        l.Rata_Kredytu,
+        
+        (l.Data_Kredytu - c.Data_Urodzenia) / 365.25 as Wiek, 
+        c.Plec, c.Bezrobocie, c.Przestepczosc, c.Srednia_Pensja, c.Urbanizacja,
+        
+        (l.Data_Kredytu - p.Data_Zalozenia) / 30.4 as Staz_Klienta,
+        p.Czestosc_Wyciagu,
+        coalesce(p.Posiada_Karte, 0) as Posiada_Karte,
+        coalesce(p.Posiada_Karte_Gold, 0) as Posiada_Karte_Gold,
+        coalesce(p.Liczba_Zlecen, 0) as Liczba_Zlecen,
+        coalesce(p.Suma_Zlecen, 0) as Suma_Zlecen,
+        coalesce(p.Oplaca_Ubezpieczenie, 0) as Oplaca_Ubezpieczenie,
+        coalesce(p.Oplaca_Mieszkanie, 0) as Oplaca_Mieszkanie,
+
+        coalesce(t.Srednie_Saldo, 0) as Srednie_Saldo,
+        coalesce(t.Min_Saldo, 0) as Min_Saldo,
+        coalesce(t.Max_Saldo, 0) as Max_Saldo,
+        coalesce(t.Odchylenie_Salda, 0) as Odchylenie_Salda,
+        coalesce(t.Suma_Wplywow, 0) as Suma_Wplywow,
+        coalesce(t.Suma_Wydatkow, 0) as Suma_Wydatkow,
+        coalesce(t.Liczba_Transakcji, 0) as Liczba_Transakcji,
+        coalesce(t.Liczba_Kar, 0) as Liczba_Kar,
+        coalesce(t.Srednie_Saldo_3M, 0) as Srednie_Saldo_3M,
+        coalesce(t.Min_Saldo_3M, 0) as Min_Saldo_3M,
+        coalesce(t.Wplywy_3M, 0) as Wplywy_3M,
+        
+        l.payments / ( (t.Wplywy_3M / 3) + 1 ) as Wskaznik_DTI, 
+        (coalesce(t.Suma_Wydatkow,0) + 1) / (coalesce(t.Suma_Wplywow,0) + 1) as Wskaznik_Oszczedzania 
+        
+    from 
+        loan_base l
+        left join bank.disp d on l.account_id = d.account_id and d.type = 'OWNER'
+        left join client_final c on d.client_id = c.client_id
+        left join feats_products p on l.account_id = p.account_id
+        left join feats_trans t on l.loan_id = t.loan_id;
+quit;
+
+proc contents data=bank.Final_Table; run;
+
+proc export data=bank.Final_Table
+    outfile="/home/u64365845/projekt/Final_Table.csv" /* Upewnij się, że ścieżka jest poprawna */
+    dbms=csv
+    replace;
+run;
