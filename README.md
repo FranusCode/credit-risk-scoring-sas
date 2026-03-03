@@ -1,1 +1,1 @@
-# credit-risk-scoring-sas
+# Modelowanie ryzyka kredytowego w banku
