@@ -148,7 +148,7 @@ quit;
 proc contents data=bank.Final_Table; run;
 
 proc export data=bank.Final_Table
-    outfile="/home/u64365845/projekt/Final_Table.csv" /* Upewnij się, że ścieżka jest poprawna */
+    outfile="/home/u64365845/projekt/Final_Table.csv"
     dbms=csv
     replace;
 run;
