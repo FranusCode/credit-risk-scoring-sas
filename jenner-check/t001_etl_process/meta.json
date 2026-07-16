@@ -1,0 +1,7 @@
+{
+  "bundle": "t001_etl_process",
+  "source_file": "etl_process.sas",
+  "source_blob_sha": "390c122ee81c46574f195314abdfe4cd9700e16d",
+  "source_commit": "ff9e4c6e27fb7f4879472df5f6136fb0999ab4da",
+  "notes": "Full ETL pipeline (loan/client/district/trans/disp/card/order -> Final_Table) from the repo's single script. Upstream reads 7 native SAS tables via a hardcoded local libname (/home/u64365845/projekt); source_data/ ships 7 of the 8 referenced tables as .sas7bdat but bank.trans itself is absent from the repo. Substituted: all 7 source tables rebuilt as small inline DATALINES blocks matching the exact column names/types of the well-known Berka/PKDD'99 financial dataset schema the repo's own README data dictionary documents (district A1/A4/A11/A12/A15, disp OWNER/DISPONENT, card classic/junior/gold, order k_symbol SIPO/POJISTNE/UVER/LEASING, trans PRIJEM/VYDAJ plus the SANKC. UROK penalty marker used by Liczba_Kar). libname bank repointed to a Jenner work-local libref; CSV export path made relative. Every PROC SQL join, join key, and derived-variable formula (Wskaznik_DTI, Wskaznik_Oszczedzania, Odchylenie_Salda, the 3-month trailing aggregates, Staz_Klienta, Wiek) is byte-identical to upstream. Output: bank.Final_Table with 10 obs x 32 vars, matching the 32-column schema (loan_id + Default + 30 features) documented in the repo README."
+}
