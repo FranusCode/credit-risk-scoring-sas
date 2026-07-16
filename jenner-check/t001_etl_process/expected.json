@@ -1,0 +1,14 @@
+{
+  "_captured_at": "2026-07-16T12:45:00Z",
+  "_captured_run_id": "r_f3c259c26377478b9c2b8da25cc8cf11",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: Wrote bank.loan (10 rows, 7 columns).",
+    "NOTE: Table bank.Final_Table created.",
+    "NOTE: PROC CONTENTS completed: 10 observations, 32 variables",
+    "NOTE: Exported 10 rows to Final_Table.csv."
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}

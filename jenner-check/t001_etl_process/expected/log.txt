@@ -1,0 +1,121 @@
+NOTE: Jenner v1.5.30 (build v1.5.30+unknown.20260715T062217Z.x86_64-unknown-linux-gnu)
+
+NOTE: Option OBS changed to 100.
+NOTE: Library BANK uses 1 concatenated paths.
+NOTE: DATA bank.loan
+
+NOTE: Processing inline DATALINES (10 lines)
+
+NOTE: Read 10 rows from DATALINES.
+NOTE: Wrote bank.loan (10 rows, 7 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.client
+
+NOTE: Processing inline DATALINES (10 lines)
+
+NOTE: Read 10 rows from DATALINES.
+NOTE: Wrote bank.client (10 rows, 3 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.district
+
+NOTE: Processing inline DATALINES (7 lines)
+
+NOTE: Read 7 rows from DATALINES.
+NOTE: Wrote bank.district (7 rows, 6 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.trans
+
+NOTE: Processing inline DATALINES (38 lines)
+
+NOTE: Read 38 rows from DATALINES.
+NOTE: Wrote bank.trans (38 rows, 7 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.disp
+
+NOTE: Processing inline DATALINES (10 lines)
+
+NOTE: Read 10 rows from DATALINES.
+NOTE: Wrote bank.disp (10 rows, 4 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.card
+
+NOTE: Processing inline DATALINES (3 lines)
+
+NOTE: Read 3 rows from DATALINES.
+NOTE: Wrote bank.card (3 rows, 4 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.order
+
+NOTE: Processing inline DATALINES (13 lines)
+
+NOTE: Read 13 rows from DATALINES.
+NOTE: Wrote bank.order (13 rows, 4 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA bank.account
+
+NOTE: Processing inline DATALINES (10 lines)
+
+NOTE: Read 10 rows from DATALINES.
+NOTE: Wrote bank.account (10 rows, 4 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA loan_base
+
+
+NOTE: Read 10 rows from bank.loan.
+NOTE: Wrote loan_base (10 rows, 11 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SQL 
+
+NOTE: Table client_geo created.
+NOTE: PROC SQL statement used.
+NOTE: DATA client_final
+
+
+NOTE: Read 10 rows from client_geo.
+NOTE: Wrote client_final (10 rows, 8 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SQL 
+
+NOTE: Table trans_history created.
+NOTE: PROC SQL statement used.
+NOTE: PROC SQL 
+
+NOTE: Table feats_trans created.
+NOTE: PROC SQL statement used.
+NOTE: PROC SQL 
+
+NOTE: Table feats_products created.
+NOTE: PROC SQL statement used.
+NOTE: PROC SQL 
+
+NOTE: Table bank.Final_Table created.
+NOTE: PROC SQL statement used.
+NOTE: PROC CONTENTS data=bank.Final_Table
+
+NOTE: PROC CONTENTS completed: 10 observations, 32 variables
+NOTE: PROC EXPORT data=bank.Final_Table outfile=Final_Table.csv
+
+NOTE: Exported 10 rows to Final_Table.csv.
+NOTE: PROC PRINT data=bank.Final_Table
+
+NOTE: PROC PRINT completed: 10 observations printed, 32 variables
